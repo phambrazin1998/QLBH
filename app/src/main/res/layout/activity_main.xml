@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Trang chính"
+                android:background="#3492DC">
+            </Toolbar>
+            <ViewFlipper
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/viewflipper">
+            </ViewFlipper>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#2196F3">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sản phẩm mới nhất"
+                    android:textSize="20sp"
+                    android:layout_margin="5dp"
+                    android:textColor="#000000" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/recyclerview">
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+        </LinearLayout>
+        <com.google.android.material.navigation.NavigationView
+            android:layout_width="match_parent"
+            android:id="@+id/navigationview"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lstmhc">
+            </ListView>
+        </com.google.android.material.navigation.NavigationView>
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</LinearLayout>
