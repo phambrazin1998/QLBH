@@ -2,11 +2,15 @@ package com.example.qlbh.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toolbar;
@@ -18,13 +22,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.qlbh.R;
+import com.example.qlbh.adapter.chitietspadapter;
 import com.example.qlbh.adapter.loaispadapter;
-import com.example.qlbh.model.sanpham;
+import com.example.qlbh.model.chitietsp;
+import com.example.qlbh.model.loaisp;
 import com.example.qlbh.ultil.server;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 import com.example.qlbh.ultil.checkinternetconnection;
-import com.squareup.picasso.RequestCreator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     ViewFlipper viewflipper;
     DrawerLayout drawerlayout;
-    ArrayList<sanpham> mangloaisp;
+    ArrayList<loaisp> mangloaisp;
+    ArrayList<chitietsp> mangsp;
     loaispadapter loaispadapter;
+    chitietspadapter chitietspadapter;
     int id=0;
     String tenloaisp="";
     String hinhloaisp="";
@@ -55,12 +62,128 @@ public class MainActivity extends AppCompatActivity {
            ActionBar();
            ActionViewFlipper();
            Getdulieuloaisp();
+           Getdulieuspmoinhat();
+           CatchOnItemListview();
+
         }
      else
         {
             checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
             finish();
         }
+    }
+
+    private void CatchOnItemListview() {
+        lstmhc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position)
+                {
+                    case 0:
+                        if(checkinternetconnection.haveNetworkConnection(getApplicationContext()))
+                        {
+                            Intent intent=new Intent(MainActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
+                        }
+                        drawerlayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 1:
+                        if(checkinternetconnection.haveNetworkConnection(getApplicationContext()))
+                        {
+                            Intent intent=new Intent(MainActivity.this,Dienthoai.class);
+                            intent.putExtra("idloaisp",mangloaisp.get(position).getId());
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
+                        }
+                        drawerlayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 2:
+                        if(checkinternetconnection.haveNetworkConnection(getApplicationContext()))
+                        {
+                            Intent intent=new Intent(MainActivity.this,Laptop.class);
+                            intent.putExtra("idloaisp",mangloaisp.get(position).getId());
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
+                        }
+                        drawerlayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 3:
+                        if(checkinternetconnection.haveNetworkConnection(getApplicationContext()))
+                        {
+                            Intent intent=new Intent(MainActivity.this,Lienhe.class);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
+                        }
+                        drawerlayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 4:
+                        if(checkinternetconnection.haveNetworkConnection(getApplicationContext()))
+                        {
+                            Intent intent=new Intent(MainActivity.this,Thongtin.class);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
+                        }
+                        drawerlayout.closeDrawer(GravityCompat.START);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void Getdulieuspmoinhat() {
+        RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(server.duongdanspmoinhat, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+              if(response != null)
+              {
+                  int ID=0;
+                  String Tensp="";
+                  Integer Gia=0;
+                  String Hinhanhsp="";
+                  String Motasp="";
+                  int Idloaisp=0;
+                  for(int i=0;i<response.length();i++)
+                  {
+                      try {
+                          JSONObject jsonObject=response.getJSONObject(i);
+                          ID=jsonObject.getInt("id");
+                          Tensp=jsonObject.getString("tensp");
+                          Gia=jsonObject.getInt("gia");
+                          Hinhanhsp=jsonObject.getString("hinhsp");
+                          Motasp=jsonObject.getString("mota");
+                          Idloaisp=jsonObject.getInt("idloaisp");
+                          mangsp.add(new chitietsp(ID,Tensp,Gia,Hinhanhsp,Motasp,Idloaisp));
+                          chitietspadapter.notifyDataSetChanged();
+                      } catch (JSONException e) {
+                          e.printStackTrace();
+                      }
+                  }
+              }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
     }
 
     private void Getdulieuloaisp() {
@@ -77,14 +200,14 @@ public class MainActivity extends AppCompatActivity {
                         id=jsonObject.getInt("idloaisp");
                         tenloaisp=jsonObject.getString("tenloaisp");
                         hinhloaisp=jsonObject.getString("hinhloaisp");
-                        mangloaisp.add(new sanpham(id,tenloaisp,hinhloaisp));
+                        mangloaisp.add(new loaisp(id,tenloaisp,hinhloaisp));
                         loaispadapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                mangloaisp.add(3,new sanpham(0,"Liên hệ","https://image.flaticon.com/icons/png/128/901/901141.png"));
-                mangloaisp.add(4,new sanpham(0,"Thông tin","https://t3.ftcdn.net/jpg/02/32/71/62/240_F_232716200_xTsnomMS5djsC6m9cDNQmEKtPgt11Xjo.jpg"));
+                mangloaisp.add(3,new loaisp(0,"Liên hệ","https://image.flaticon.com/icons/png/128/901/901141.png"));
+                mangloaisp.add(4,new loaisp(0,"Thông tin","https://t3.ftcdn.net/jpg/02/32/71/62/240_F_232716200_xTsnomMS5djsC6m9cDNQmEKtPgt11Xjo.jpg"));
 
               }
             }
@@ -129,16 +252,22 @@ public class MainActivity extends AppCompatActivity {
     private void AnhXa()
     {
         drawerlayout= (DrawerLayout) findViewById(R.id.drawerlayout);
-        toolbar     =  findViewById(R.id.toolbar);
+        toolbar     = (Toolbar) findViewById(R.id.toolbar);
         viewflipper =(ViewFlipper) findViewById(R.id.viewflipper);
         recyclerview =(RecyclerView) findViewById(R.id.recyclerview);
         navigationview=(NavigationView) findViewById(R.id.navigationview);
         lstmhc=(ListView)findViewById(R.id.lstmhc);
         mangloaisp=new ArrayList<>();
-        mangloaisp.add(0,new sanpham(0,"Trang chính",
+        mangloaisp.add(0,new loaisp(0,"Trang chính",
                 "https://image.flaticon.com/icons/png/128/1946/1946433.png"));
 
         loaispadapter=new loaispadapter(mangloaisp,getApplicationContext());
         lstmhc.setAdapter(loaispadapter);
+        mangsp=new ArrayList<>();
+        chitietspadapter=new chitietspadapter(getApplicationContext(),mangsp);
+        recyclerview.setHasFixedSize(true);
+        recyclerview.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        recyclerview.setAdapter(chitietspadapter);
+
     }
 }
