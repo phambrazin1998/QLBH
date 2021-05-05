@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QLBH">
-        <activity android:name=".activity.thongtinsp"></activity>
+        <activity android:name=".activity.Thanhtoan"></activity>
+        <activity android:name=".activity.Giohang" />
+        <activity android:name=".activity.thongtinsp" />
         <activity android:name=".activity.Thongtin" />
         <activity android:name=".activity.Lienhe" />
         <activity android:name=".activity.Laptop" />

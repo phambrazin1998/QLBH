@@ -1,4 +1,5 @@
 package com.example.qlbh.activity;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -7,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -25,6 +28,7 @@ import com.example.qlbh.R;
 import com.example.qlbh.adapter.chitietspadapter;
 import com.example.qlbh.adapter.loaispadapter;
 import com.example.qlbh.model.chitietsp;
+import com.example.qlbh.model.giohang;
 import com.example.qlbh.model.loaisp;
 import com.example.qlbh.ultil.server;
 import com.google.android.material.navigation.NavigationView;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     int id=0;
     String tenloaisp="";
     String hinhloaisp="";
-
+    public static ArrayList<giohang> manggiohang;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +75,23 @@ public class MainActivity extends AppCompatActivity {
             checkinternetconnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
             finish();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menugiohang,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.menuiohang:
+                Intent intent=new Intent(getApplicationContext(),Giohang.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void CatchOnItemListview() {
@@ -260,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
         mangloaisp=new ArrayList<>();
         mangloaisp.add(0,new loaisp(0,"Trang chính",
                 "https://image.flaticon.com/icons/png/128/1946/1946433.png"));
-
         loaispadapter=new loaispadapter(mangloaisp,getApplicationContext());
         lstmhc.setAdapter(loaispadapter);
         mangsp=new ArrayList<>();
@@ -268,6 +288,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
         recyclerview.setAdapter(chitietspadapter);
+       if(manggiohang!=null)
+       {
 
+       }
+       else
+       {
+           manggiohang=new ArrayList<>();
+       }
     }
 }
